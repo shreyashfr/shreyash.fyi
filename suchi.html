@@ -3,6 +3,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Suchi Tiwari — Mentorship Plan</title>
+<script>
+// Check access on page load
+if (sessionStorage.getItem('mentorship_access') !== 'granted') {
+    alert('Access denied. Please authenticate from the homepage.');
+    window.location.href = '/';
+}
+</script>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&amp;family=DM+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }

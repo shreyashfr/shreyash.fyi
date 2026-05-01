@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - fyi by shreyash</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #F7F5F0;
+            --surface: #FFFFFF;
+            --border: #E4E0D8;
+            --border-strong: #C8C2B4;
+            --text-primary: #1A1814;
+            --text-secondary: #6B6459;
+            --text-muted: #9C9589;
+            --accent: #2A5C45;
+            --accent-light: #E8F2ED;
+            --accent-mid: #A8CBBA;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        /* Login Screen */
+        .login-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .login-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 3rem;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        }
+
+        .login-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 32px;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-subtitle {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-strong);
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            background: var(--bg);
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: var(--surface);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-login:hover {
+            background: #1e4534;
+        }
+
+        .error-msg {
+            color: #8C1E1E;
+            font-size: 13px;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        /* Admin Panel */
+        .admin-panel {
+            display: none;
+        }
+
+        .admin-header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .admin-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .btn-logout {
+            padding: 8px 20px;
+            background: var(--bg);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-strong);
+            border-radius: 999px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-logout:hover {
+            background: var(--border);
+        }
+
+        .admin-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .section {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+        }
+
+        .section-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .editor-field {
+            margin-bottom: 1.5rem;
+        }
+
+        .editor-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .editor-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-strong);
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            background: var(--bg);
+            transition: all 0.2s;
+        }
+
+        .editor-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 12px 16px;
+            border: 1px solid var(--border-strong);
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            background: var(--bg);
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        .editor-input:focus,
+        .editor-textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: var(--surface);
+        }
+
+        .preview-section {
+            background: var(--accent-light);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+            border: 1px solid var(--accent-mid);
+        }
+
+        .preview-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .preview-content h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 48px;
+            line-height: 1.1;
+            margin-bottom: 0.5rem;
+        }
+
+        .preview-content .subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .preview-content .bio p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .save-bar {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 999px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s;
+        }
+
+        .save-bar.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .btn-save {
+            padding: 8px 20px;
+            background: white;
+            color: var(--accent);
+            border: none;
+            border-radius: 999px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-save:hover {
+            background: var(--accent-light);
+        }
+
+        .btn-discard {
+            padding: 8px 20px;
+            background: transparent;
+            color: white;
+            border: 1px solid white;
+            border-radius: 999px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-discard:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .admin-content {
+                padding: 2rem 1rem;
+            }
+
+            .section {
+                padding: 1.5rem;
+            }
+
+            .preview-content h1 {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-card">
+            <h1 class="login-title">Admin Panel</h1>
+            <p class="login-subtitle">Enter password to continue</p>
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input
+                        type="password"
+                        class="form-input"
+                        id="passwordInput"
+                        placeholder="Enter admin password"
+                        autocomplete="off"
+                    >
+                </div>
+                <button type="submit" class="btn-login">Login</button>
+                <p class="error-msg" id="errorMsg">Incorrect password</p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-header">
+            <div class="admin-title">Content Editor</div>
+            <button class="btn-logout" onclick="logout()">Logout</button>
+        </div>
+
+        <div class="admin-content">
+            <div class="section">
+                <div class="section-title">Homepage Content</div>
+
+                <div class="editor-field">
+                    <label class="editor-label">Main Title</label>
+                    <input
+                        type="text"
+                        class="editor-input"
+                        id="titleInput"
+                        placeholder="fyi by shreyash"
+                        oninput="updatePreview(); showSaveBar()"
+                    >
+                </div>
+
+                <div class="editor-field">
+                    <label class="editor-label">Subtitle / Headline</label>
+                    <input
+                        type="text"
+                        class="editor-input"
+                        id="subtitleInput"
+                        placeholder="Your headline..."
+                        oninput="updatePreview(); showSaveBar()"
+                    >
+                </div>
+
+                <div class="editor-field">
+                    <label class="editor-label">Bio - Paragraph 1</label>
+                    <textarea
+                        class="editor-textarea"
+                        id="bio1Input"
+                        placeholder="First paragraph of your bio..."
+                        oninput="updatePreview(); showSaveBar()"
+                    ></textarea>
+                </div>
+
+                <div class="editor-field">
+                    <label class="editor-label">Bio - Paragraph 2</label>
+                    <textarea
+                        class="editor-textarea"
+                        id="bio2Input"
+                        placeholder="Second paragraph of your bio..."
+                        oninput="updatePreview(); showSaveBar()"
+                    ></textarea>
+                </div>
+            </div>
+
+            <div class="preview-section">
+                <div class="preview-title">Live Preview</div>
+                <div class="preview-content">
+                    <h1 id="previewTitle">fyi by shreyash</h1>
+                    <p class="subtitle" id="previewSubtitle">I build (and deploy) AI Agents on weekdays... and then I build more on weekends. ☕</p>
+                    <div class="bio">
+                        <p id="previewBio1">I have built Automations, AI Agents, Gen AI based Web and Mobile Applications for my employers and majorly as my hobby projects.</p>
+                        <p id="previewBio2">Currently working as an Agentic AI Engineer, building systems that actually work in production.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="save-bar" id="saveBar">
+            <span>You have unsaved changes</span>
+            <button class="btn-save" onclick="saveChanges()">Save Changes</button>
+            <button class="btn-discard" onclick="discardChanges()">Discard</button>
+        </div>
+    </div>
+
+    <script>
+        const ADMIN_PASSWORD = 'shreyashisadmin';
+        let originalContent = {};
+
+        // Login handler
+        function handleLogin(event) {
+            event.preventDefault();
+            const password = document.getElementById('passwordInput').value;
+
+            if (password === ADMIN_PASSWORD) {
+                sessionStorage.setItem('admin_auth', 'true');
+                showAdminPanel();
+            } else {
+                document.getElementById('errorMsg').style.display = 'block';
+                document.getElementById('passwordInput').value = '';
+            }
+        }
+
+        // Show admin panel
+        function showAdminPanel() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            loadContent();
+        }
+
+        // Logout
+        function logout() {
+            sessionStorage.removeItem('admin_auth');
+            location.reload();
+        }
+
+        // Load existing content
+        function loadContent() {
+            const saved = localStorage.getItem('shreyash_content');
+            const defaults = {
+                title: 'fyi by shreyash',
+                subtitle: 'I build (and deploy) AI Agents on weekdays... and then I build more on weekends. ☕',
+                bio1: 'I have built Automations, AI Agents, Gen AI based Web and Mobile Applications for my employers and majorly as my hobby projects. With good understanding of Machine Learning and Deep Learning concepts, I love to read research papers and stay updated on groundbreaking models.',
+                bio2: 'Currently working as an Agentic AI Engineer, building systems that actually work in production. I help folks transition into Gen AI / Agentic AI roles through hands-on mentorship.'
+            };
+
+            const content = saved ? JSON.parse(saved) : defaults;
+            originalContent = { ...content };
+
+            document.getElementById('titleInput').value = content.title;
+            document.getElementById('subtitleInput').value = content.subtitle;
+            document.getElementById('bio1Input').value = content.bio1;
+            document.getElementById('bio2Input').value = content.bio2;
+
+            updatePreview();
+        }
+
+        // Update live preview
+        function updatePreview() {
+            document.getElementById('previewTitle').textContent = document.getElementById('titleInput').value;
+            document.getElementById('previewSubtitle').textContent = document.getElementById('subtitleInput').value;
+            document.getElementById('previewBio1').textContent = document.getElementById('bio1Input').value;
+            document.getElementById('previewBio2').textContent = document.getElementById('bio2Input').value;
+        }
+
+        // Show save bar
+        function showSaveBar() {
+            document.getElementById('saveBar').classList.add('show');
+        }
+
+        // Hide save bar
+        function hideSaveBar() {
+            document.getElementById('saveBar').classList.remove('show');
+        }
+
+        // Save changes
+        function saveChanges() {
+            const content = {
+                title: document.getElementById('titleInput').value,
+                subtitle: document.getElementById('subtitleInput').value,
+                bio1: document.getElementById('bio1Input').value,
+                bio2: document.getElementById('bio2Input').value
+            };
+
+            localStorage.setItem('shreyash_content', JSON.stringify(content));
+            originalContent = { ...content };
+            hideSaveBar();
+
+            // Show success message
+            const bar = document.getElementById('saveBar');
+            bar.innerHTML = '<span>✓ Changes saved successfully!</span>';
+            bar.classList.add('show');
+            setTimeout(() => {
+                bar.innerHTML = `
+                    <span>You have unsaved changes</span>
+                    <button class="btn-save" onclick="saveChanges()">Save Changes</button>
+                    <button class="btn-discard" onclick="discardChanges()">Discard</button>
+                `;
+                hideSaveBar();
+            }, 2000);
+        }
+
+        // Discard changes
+        function discardChanges() {
+            if (confirm('Discard all unsaved changes?')) {
+                document.getElementById('titleInput').value = originalContent.title;
+                document.getElementById('subtitleInput').value = originalContent.subtitle;
+                document.getElementById('bio1Input').value = originalContent.bio1;
+                document.getElementById('bio2Input').value = originalContent.bio2;
+                updatePreview();
+                hideSaveBar();
+            }
+        }
+
+        // Check auth on load
+        if (sessionStorage.getItem('admin_auth') === 'true') {
+            showAdminPanel();
+        }
+    </script>
+</body>
+</html>
