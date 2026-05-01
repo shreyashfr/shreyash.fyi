@@ -22,6 +22,8 @@
             --text-muted: #9C9589;
             --blue: #1E4D8C;
             --blue-light: #E6EEF8;
+            --accent: #2A5C45;
+            --accent-light: #E8F2ED;
         }
 
         body {
@@ -73,7 +75,7 @@
             margin-bottom: 0.5rem;
         }
 
-        .form-input {
+        .form-input, .form-textarea {
             width: 100%;
             padding: 12px 16px;
             border: 1px solid var(--border-strong);
@@ -84,7 +86,12 @@
             transition: all 0.2s;
         }
 
-        .form-input:focus {
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-input:focus, .form-textarea:focus {
             outline: none;
             border-color: var(--blue);
             background: var(--surface);
@@ -127,6 +134,9 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .admin-title {
@@ -151,30 +161,9 @@
         }
 
         .admin-content {
-            max-width: 800px;
+            max-width: 1000px;
             margin: 0 auto;
             padding: 3rem 2rem;
-        }
-
-        .notice {
-            background: var(--blue-light);
-            border: 1px solid #A8C0E0;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .notice-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--blue);
-            margin-bottom: 0.5rem;
-        }
-
-        .notice-text {
-            font-size: 13px;
-            color: var(--text-secondary);
-            line-height: 1.6;
         }
 
         .section {
@@ -194,25 +183,122 @@
             margin-bottom: 1.5rem;
         }
 
-        .info-row {
+        .blog-item {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .blog-item-header {
             display: flex;
             justify-content: space-between;
-            padding: 1rem;
-            background: var(--bg);
-            border-radius: 8px;
+            align-items: start;
             margin-bottom: 0.75rem;
         }
 
-        .info-label {
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-secondary);
+        .blog-tag-input {
+            width: 120px;
+            padding: 4px 10px;
+            font-size: 11px;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: var(--surface);
         }
 
-        .info-value {
+        .blog-date-input {
+            width: 100px;
+            padding: 4px 10px;
+            font-size: 11px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--surface);
+        }
+
+        .btn-remove {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 4px 12px;
+            background: #F8EBE8;
+            color: #8C3A2A;
+            border: 1px solid #D9A898;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .btn-remove:hover {
+            background: #f0d4cc;
+        }
+
+        .btn-add {
+            width: 100%;
+            padding: 12px;
+            background: var(--accent-light);
+            color: var(--accent);
+            border: 1px dashed var(--accent);
+            border-radius: 10px;
+            font-family: 'DM Sans', sans-serif;
             font-size: 14px;
-            color: var(--text-primary);
-            font-family: monospace;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-add:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .save-bar {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--blue);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 999px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s;
+            z-index: 200;
+        }
+
+        .save-bar.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .btn-save {
+            padding: 8px 20px;
+            background: white;
+            color: var(--blue);
+            border: none;
+            border-radius: 999px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-discard {
+            padding: 8px 20px;
+            background: transparent;
+            color: white;
+            border: 1px solid white;
+            border-radius: 999px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -225,13 +311,7 @@
             <form onsubmit="handleLogin(event)">
                 <div class="form-group">
                     <label class="form-label">Password</label>
-                    <input
-                        type="password"
-                        class="form-input"
-                        id="passwordInput"
-                        placeholder="Enter admin password"
-                        autocomplete="off"
-                    >
+                    <input type="password" class="form-input" id="passwordInput" placeholder="Enter admin password" autocomplete="off">
                 </div>
                 <button type="submit" class="btn-login">Login</button>
                 <p class="error-msg" id="errorMsg">Incorrect password</p>
@@ -242,82 +322,47 @@
     <!-- Admin Panel -->
     <div class="admin-panel" id="adminPanel">
         <div class="admin-header">
-            <div class="admin-title">Admin Dashboard</div>
+            <div class="admin-title">Content Editor</div>
             <button class="btn-logout" onclick="logout()">Logout</button>
         </div>
 
         <div class="admin-content">
-            <div class="notice">
-                <div class="notice-title">ℹ️ Content Management Note</div>
-                <p class="notice-text">
-                    The current website design uses static content (company logo, role, LinkedIn embeds).
-                    To change these, you'll need to edit the HTML file directly or request changes.
-                    Future updates will include a full content management system.
-                </p>
-            </div>
-
+            <!-- Profile Section -->
             <div class="section">
-                <div class="section-title">Current Configuration</div>
-
-                <div class="info-row">
-                    <span class="info-label">Role Title</span>
-                    <span class="info-value">Agentic AI Engineer</span>
+                <div class="section-title">Profile Information</div>
+                <div class="form-group">
+                    <label class="form-label">Headline</label>
+                    <input type="text" class="form-input" id="headlineInput" placeholder="I build (and deploy) AI Agents" oninput="showSaveBar()">
                 </div>
-
-                <div class="info-row">
-                    <span class="info-label">Company</span>
-                    <span class="info-value">Second Brain Labs</span>
-                </div>
-
-                <div class="info-row">
-                    <span class="info-label">Company URL</span>
-                    <span class="info-value">linkedin.com/company/sales-automation-sbl</span>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-textarea" id="descriptionInput" placeholder="Your description..." oninput="showSaveBar()"></textarea>
                 </div>
             </div>
 
+            <!-- Blogs Section -->
             <div class="section">
-                <div class="section-title">Mentorship Access</div>
-
-                <div class="info-row">
-                    <span class="info-label">Access Token</span>
-                    <span class="info-value">suchi</span>
-                </div>
-
-                <div class="info-row">
-                    <span class="info-label">Email</span>
-                    <span class="info-value">suchitiwari0509@gmail.com</span>
-                </div>
-
-                <div class="info-row">
-                    <span class="info-label">Password</span>
-                    <span class="info-value">suchi9832</span>
-                </div>
+                <div class="section-title">Blogs & Posts</div>
+                <div id="blogsList"></div>
+                <button class="btn-add" onclick="addBlog()">+ Add New Post/Blog</button>
             </div>
+        </div>
 
-            <div class="section">
-                <div class="section-title">LinkedIn Embeds</div>
-
-                <div class="info-row">
-                    <span class="info-label">Post 1</span>
-                    <span class="info-value">urn:li:share:7437112633746550784</span>
-                </div>
-
-                <div class="info-row">
-                    <span class="info-label">Post 2</span>
-                    <span class="info-value">urn:li:ugcPost:7413999950847524864</span>
-                </div>
-            </div>
+        <div class="save-bar" id="saveBar">
+            <span>You have unsaved changes</span>
+            <button class="btn-save" onclick="saveChanges()">Save Changes</button>
+            <button class="btn-discard" onclick="discardChanges()">Discard</button>
         </div>
     </div>
 
     <script>
         const ADMIN_PASSWORD = 'shreyashisadmin';
+        let originalContent = {};
+        let blogs = [];
 
-        // Login handler
         function handleLogin(event) {
             event.preventDefault();
             const password = document.getElementById('passwordInput').value;
-
             if (password === ADMIN_PASSWORD) {
                 sessionStorage.setItem('admin_auth', 'true');
                 showAdminPanel();
@@ -327,19 +372,118 @@
             }
         }
 
-        // Show admin panel
         function showAdminPanel() {
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('adminPanel').style.display = 'block';
+            loadContent();
         }
 
-        // Logout
         function logout() {
             sessionStorage.removeItem('admin_auth');
             location.reload();
         }
 
-        // Check auth on load
+        function loadContent() {
+            const saved = localStorage.getItem('shreyash_content');
+            const defaults = {
+                headline: 'I build (and deploy) AI Agents',
+                description: 'Building production-ready AI systems. Helping teams transition into Gen AI and Agentic AI roles through hands-on mentorship.',
+                blogs: [
+                    { tag: 'LinkedIn', title: 'Building AI tools that actually ship', description: 'Most people treat tutorials like a syllabus. I use them like a dictionary - build first, learn what you need.', date: 'Mar 2026', url: 'https://www.linkedin.com/feed/update/urn:li:share:7437112633746550784' },
+                    { tag: 'Blog', title: 'From tutorials to production', description: 'How I built Memory Mo, Mini Claw, and deployed real AI agents in production.', date: 'Feb 2026', url: '#' }
+                ]
+            };
+
+            const content = saved ? JSON.parse(saved) : defaults;
+            originalContent = JSON.parse(JSON.stringify(content));
+            blogs = JSON.parse(JSON.stringify(content.blogs || []));
+
+            document.getElementById('headlineInput').value = content.headline;
+            document.getElementById('descriptionInput').value = content.description;
+            renderBlogs();
+        }
+
+        function renderBlogs() {
+            const container = document.getElementById('blogsList');
+            container.innerHTML = blogs.map((blog, index) => `
+                <div class="blog-item">
+                    <button class="btn-remove" onclick="removeBlog(${index})">Remove</button>
+                    <div class="blog-item-header">
+                        <input type="text" class="blog-tag-input" value="${blog.tag}" onchange="updateBlog(${index}, 'tag', this.value)" placeholder="Tag">
+                        <input type="text" class="blog-date-input" value="${blog.date}" onchange="updateBlog(${index}, 'date', this.value)" placeholder="Date">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Title</label>
+                        <input type="text" class="form-input" value="${blog.title}" onchange="updateBlog(${index}, 'title', this.value)" placeholder="Post title">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-textarea" onchange="updateBlog(${index}, 'description', this.value)" placeholder="Post description">${blog.description}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">URL</label>
+                        <input type="text" class="form-input" value="${blog.url}" onchange="updateBlog(${index}, 'url', this.value)" placeholder="https://...">
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addBlog() {
+            blogs.push({ tag: 'Blog', title: 'New Post', description: 'Description here', date: 'May 2026', url: '#' });
+            renderBlogs();
+            showSaveBar();
+        }
+
+        function removeBlog(index) {
+            if (confirm('Remove this post?')) {
+                blogs.splice(index, 1);
+                renderBlogs();
+                showSaveBar();
+            }
+        }
+
+        function updateBlog(index, field, value) {
+            blogs[index][field] = value;
+            showSaveBar();
+        }
+
+        function showSaveBar() {
+            document.getElementById('saveBar').classList.add('show');
+        }
+
+        function hideSaveBar() {
+            document.getElementById('saveBar').classList.remove('show');
+        }
+
+        function saveChanges() {
+            const content = {
+                headline: document.getElementById('headlineInput').value,
+                description: document.getElementById('descriptionInput').value,
+                blogs: blogs
+            };
+
+            localStorage.setItem('shreyash_content', JSON.stringify(content));
+            originalContent = JSON.parse(JSON.stringify(content));
+
+            const bar = document.getElementById('saveBar');
+            bar.innerHTML = '<span>✓ Changes saved successfully!</span>';
+            setTimeout(() => {
+                bar.innerHTML = `
+                    <span>You have unsaved changes</span>
+                    <button class="btn-save" onclick="saveChanges()">Save Changes</button>
+                    <button class="btn-discard" onclick="discardChanges()">Discard</button>
+                `;
+                hideSaveBar();
+            }, 2000);
+        }
+
+        function discardChanges() {
+            if (confirm('Discard all unsaved changes?')) {
+                loadContent();
+                hideSaveBar();
+            }
+        }
+
         if (sessionStorage.getItem('admin_auth') === 'true') {
             showAdminPanel();
         }
