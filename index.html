@@ -40,33 +40,95 @@
         }
 
         .left-section {
-            position: sticky;
-            top: 4rem;
+            max-height: calc(100vh - 4rem);
+            overflow-y: auto;
+            padding-right: 1rem;
+        }
+
+        .left-section::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .left-section::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .left-section::-webkit-scrollbar-thumb {
+            background: var(--border-strong);
+            border-radius: 3px;
+        }
+
+        .left-section::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
         }
 
         h1 {
             font-family: 'DM Serif Display', serif;
             font-size: clamp(42px, 6vw, 64px);
             line-height: 1.1;
-            margin-bottom: 1rem;
+            margin-bottom: 0.25rem;
             color: var(--text-primary);
         }
 
-        .subtitle {
-            font-size: clamp(16px, 2vw, 18px);
-            color: var(--text-secondary);
+        .title-fyi {
+            font-size: clamp(64px, 10vw, 96px);
+            color: var(--accent);
+            display: block;
+            line-height: 1;
+            margin-bottom: 0;
+        }
+
+        .title-by {
+            font-size: clamp(18px, 2.5vw, 24px);
+            color: var(--text-muted);
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 300;
+            display: block;
             margin-bottom: 2rem;
+        }
+
+        .subtitle {
+            font-size: clamp(15px, 2vw, 17px);
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
             line-height: 1.6;
         }
 
         .about {
-            font-size: 15px;
+            font-size: 14px;
             color: var(--text-secondary);
-            line-height: 1.8;
+            line-height: 1.7;
+            margin-bottom: 2rem;
         }
 
         .about p {
+            margin-bottom: 0.75rem;
+        }
+
+        .linkedin-posts {
+            margin-top: 2rem;
+        }
+
+        .linkedin-posts-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-muted);
+            font-weight: 600;
             margin-bottom: 1rem;
+        }
+
+        .linkedin-embeds {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .linkedin-embeds iframe {
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            width: 100% !important;
+            max-width: 504px;
         }
 
         .cal-container {
@@ -152,13 +214,24 @@
 
     <div class="container">
         <div class="left-section">
-            <h1 id="main-title">fyi by shreyash</h1>
+            <h1>
+                <span class="title-fyi" id="main-title">fyi</span>
+                <span class="title-by">by shreyash</span>
+            </h1>
             <p class="subtitle" id="subtitle">I build (and deploy) AI Agents on weekdays... and then I build more on weekends. ☕</p>
 
             <div class="about" id="about">
-                <p id="bio-p1">I have built Automations, AI Agents, Gen AI based Web and Mobile Applications for my employers and majorly as my hobby projects. With good understanding of Machine Learning and Deep Learning concepts, I love to read research papers and stay updated on groundbreaking models.</p>
+                <p id="bio-p1">I have built Automations, AI Agents, Gen AI based Web and Mobile Applications. With good understanding of Machine Learning and Deep Learning concepts, I love to read research papers.</p>
 
-                <p id="bio-p2">Currently working as an Agentic AI Engineer, building systems that actually work in production. I help folks transition into Gen AI / Agentic AI roles through hands-on mentorship.</p>
+                <p id="bio-p2">Currently working as an Agentic AI Engineer, building systems that work in production. I help folks transition into Gen AI / Agentic AI roles.</p>
+            </div>
+
+            <div class="linkedin-posts">
+                <div class="linkedin-posts-title">Recent Posts</div>
+                <div class="linkedin-embeds">
+                    <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:share:7437112633746550784?collapsed=1" height="669" width="504" frameborder="0" allowfullscreen="" title="Embedded post"></iframe>
+                    <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7413999950847524864?collapsed=1" height="567" width="504" frameborder="0" allowfullscreen="" title="Embedded post"></iframe>
+                </div>
             </div>
         </div>
 
@@ -188,18 +261,21 @@
             const token = prompt('Enter access token:');
             if (!token) return;
 
-            if (token === 'suchi') {
+            if (token.toLowerCase() === 'suchi') {
                 const email = prompt('Enter your email:');
-                const password = prompt('Enter your password:');
+                if (!email) return;
 
-                if (email === 'suchitiwari0509@gmail.com' && password === 'suchi9832') {
+                const password = prompt('Enter your password:');
+                if (!password) return;
+
+                if (email.toLowerCase() === 'suchitiwari0509@gmail.com' && password === 'suchi9832') {
                     sessionStorage.setItem('mentorship_access', 'granted');
                     window.location.href = '/suchi.html';
                 } else {
-                    alert('Invalid credentials');
+                    alert('Invalid email or password');
                 }
             } else {
-                alert('Invalid token');
+                alert('Invalid token. Please try again.');
             }
         }
 

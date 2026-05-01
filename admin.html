@@ -241,9 +241,18 @@
 
         .preview-content h1 {
             font-family: 'DM Serif Display', serif;
-            font-size: 48px;
-            line-height: 1.1;
-            margin-bottom: 0.5rem;
+            font-size: 64px;
+            line-height: 1;
+            margin-bottom: 0.25rem;
+            color: var(--accent);
+        }
+
+        .preview-content .by-line {
+            font-size: 18px;
+            color: var(--text-muted);
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 300;
+            margin-bottom: 1.5rem;
         }
 
         .preview-content .subtitle {
@@ -365,12 +374,12 @@
                 <div class="section-title">Homepage Content</div>
 
                 <div class="editor-field">
-                    <label class="editor-label">Main Title</label>
+                    <label class="editor-label">Main Title (Large Text)</label>
                     <input
                         type="text"
                         class="editor-input"
                         id="titleInput"
-                        placeholder="fyi by shreyash"
+                        placeholder="fyi"
                         oninput="updatePreview(); showSaveBar()"
                     >
                 </div>
@@ -410,11 +419,12 @@
             <div class="preview-section">
                 <div class="preview-title">Live Preview</div>
                 <div class="preview-content">
-                    <h1 id="previewTitle">fyi by shreyash</h1>
+                    <h1 id="previewTitle">fyi</h1>
+                    <p class="by-line">by shreyash</p>
                     <p class="subtitle" id="previewSubtitle">I build (and deploy) AI Agents on weekdays... and then I build more on weekends. ☕</p>
                     <div class="bio">
-                        <p id="previewBio1">I have built Automations, AI Agents, Gen AI based Web and Mobile Applications for my employers and majorly as my hobby projects.</p>
-                        <p id="previewBio2">Currently working as an Agentic AI Engineer, building systems that actually work in production.</p>
+                        <p id="previewBio1">I have built Automations, AI Agents, Gen AI based Web and Mobile Applications.</p>
+                        <p id="previewBio2">Currently working as an Agentic AI Engineer, building systems that work in production.</p>
                     </div>
                 </div>
             </div>
@@ -462,10 +472,10 @@
         function loadContent() {
             const saved = localStorage.getItem('shreyash_content');
             const defaults = {
-                title: 'fyi by shreyash',
+                title: 'fyi',
                 subtitle: 'I build (and deploy) AI Agents on weekdays... and then I build more on weekends. ☕',
-                bio1: 'I have built Automations, AI Agents, Gen AI based Web and Mobile Applications for my employers and majorly as my hobby projects. With good understanding of Machine Learning and Deep Learning concepts, I love to read research papers and stay updated on groundbreaking models.',
-                bio2: 'Currently working as an Agentic AI Engineer, building systems that actually work in production. I help folks transition into Gen AI / Agentic AI roles through hands-on mentorship.'
+                bio1: 'I have built Automations, AI Agents, Gen AI based Web and Mobile Applications. With good understanding of Machine Learning and Deep Learning concepts, I love to read research papers.',
+                bio2: 'Currently working as an Agentic AI Engineer, building systems that work in production. I help folks transition into Gen AI / Agentic AI roles.'
             };
 
             const content = saved ? JSON.parse(saved) : defaults;
